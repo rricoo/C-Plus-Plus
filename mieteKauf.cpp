@@ -4,12 +4,13 @@
  */
  
  #include <iostream>
+ #include <sstream>
  #include <string>
  using namespace std;
  
  int main() {
 	 
-	string name;
+	string mystr, name;
 	int auswahl;
 	int loop = 1;
 	int wagenGroesse, mietZeit;
@@ -23,10 +24,11 @@
 	cout << " ******************* \n" << endl;
 	
 	cout << " Willkommen Wie ist Ihr Name? " << endl;
-	cin >> name;
+	getline(cin, mystr);
+	stringstream(mystr) >> name;
 	
     anfang:
-	cout << " Mieten (1) oder Kaufen (2) " << endl;
+	cout << " \nMieten (1) oder Kaufen (2) " << endl;
 	cin >> auswahl;
 	
 	while(loop == 1) {
@@ -35,44 +37,18 @@
 		
 			// Eingabe der Mietdaten
 			eingabe:
-			cout << " Wagenkategorie (1) klein oder (2) gross: " << endl;
-			cin >> wagenGroesse;
-		
-			switch(wagenGroesse) {
-				case 1  : freiKilometer  = 60;
-						  preisKilometer = kilometer * 0.4;
-						  break;
 			
-				case 2  : freiKilometer  = 90;
-						  preisKilometer = kilometer * 0.6;
-						  break;
-					  
-				default : cout << " Falscher Wert, Bitte neu eingeben \n! " << endl; 
-						  break;
-			}
-	
-			cout << " Mietzeit (Anzahl in Tage) " << endl;
-			cin >> mietZeit;
-		
-			if(mietZeit <= 0) {
-				cout << " Bitte einen grosseren Wert eingeben " << endl;
-			}
-		
-			else if(mietZeit >= 366) {
-				cout << " Laenger als ein Jahr geht leider nicht! " << endl;
-			}
-		
-			else {
-				cout << " Vielleicht waere ein Kauf doch besser. " << endl;
-			}
-				
 			cout << " Gefahrene Kilometer " << endl;
 			cin >> kilometer;
 		
 			if(kilometer <= 0) {
 				cout << " Bitte ein Wert groesser als \"0\" eingeben! " << endl;
 			}
-		
+			
+			else if(kilometer != 0 && kilometer < 40075) {
+			    
+			}
+			
 			else if(kilometer >= 40075) {
 				int erdeUmrundung = (int) kilometer %40075;			// Berechnung aendern
 				printf(" Respekt fuer die %d fache Erdumrundung ", erdeUmrundung);
@@ -82,11 +58,57 @@
 			else {
 				cout << " Bitte neu eingeben! " << endl;
 			}
+			
+			cout << " Wagenkategorie (1) klein oder (2) gross: " << endl;
+			cin >> wagenGroesse;
+			
+			if(wagenGroesse == 1) {
+			    if(kilometer <= 60) {
+			        preisKilometer = 0;
+			    }
+			    else {
+			        preisKilometer = kilometer * 0.4;
+			    }
+			}
+			if(wagenGroesse == 2) {
+			    if(kilometer <= 90) {
+			        preisKilometer = 0;
+			    }
+			    else { 
+			        preisKilometer = kilometer * 0.6;
+			    }
+			}
+//		    else {
+//		        cout << " Falscher Wert, Bitte neu eingeben \n! " << endl; 
+//				break;
+//			}
+	
+			cout << " Mietzeit (Anzahl in Tage) " << endl;
+			cin >> mietZeit;
 		
+			if(mietZeit <= 0) {
+				cout << " Bitte einen grosseren Wert eingeben " << endl;
+				continue;
+			}
+			
+			else if(mietZeit >= 1 || mietZeit <= 364) {
+			    // continue;
+			}
+		
+			else if(mietZeit >= 365) {                   // Schaltjahr noch nicht beruecksichtigt
+				cout << " Laenger als ein Jahr geht leider nicht! " << endl;
+			}
+		
+			else {
+				cout << " Vielleicht waere ein Kauf doch besser. " << endl;
+			}
+				
 			// Ausgabe Mietkosten und Provision addieren
-			kostenMiet = freiKilometer + preisKilometer;
+			if(freiKilometer <= 60 || freiKilometer <= 90) {
+			
+			kostenMiet = preisKilometer * mietZeit;
 			provision = (kostenMiet * provisionMiet) / 100;
-			printf(" Die Miete des Wagens kostet %.2f ",kosten);
+			printf(" Die Miete des Wagens kostet %.2f Euro", kostenMiet);
 		}
 		if(auswahl == 2) {
 			
@@ -94,7 +116,7 @@
 			double preis, rabatt, verkaufspreis;
 			int zustand;
 			
-			cout << " Bitte geben Sie den Listenpreis ein: " << endl;
+			cout << " \nBitte geben Sie den Listenpreis ein: " << endl;
 			cin >> preis;
 			
 			cout << " \nHier noch den Rabatt (in %): " << endl;
@@ -114,18 +136,18 @@
 				provision = verkaufspreis * provisionAlt / 100;
 			}
 		}
-        else{
-            cout << "Bitte entweder (1) oder (2) eingeben!";
-            loop = 1;
-            goto anfang;
-        }
-	cout << " Wollen Sie noch ein Wagen erfassen ? " << endl;
+//      else{
+//          cout << "\nBitte entweder (1) oder (2) eingeben!";
+//          loop = 1;
+//          goto anfang;
+//      }
+	cout << " \nWollen Sie noch ein Wagen erfassen ? " << endl;
 	cout << " Fuer Ja (1) ansonsten (0) " << endl;
 	cin >> loop;
 	}	
 
-	//printf(" Hallo %s Ihre Provision ist %f Euro ",name,provision);
-	cout << " Hallo " << name << " Ihre Provision ist " << provision << " Euro " << endl;
+	printf(" Hallo %s Ihre Provision ist %.2f Euro ", name.c_str(), provision);
+	//cout << " Hallo " << name << " Ihre Provision ist " << provision << " Euro " << endl;
 		
 	return 0;
-}
+}}
